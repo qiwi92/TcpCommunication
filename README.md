@@ -1,6 +1,7 @@
-# TcpCommunication
+# Tcp Communication
+Extremly simple local interprocess communcation framework. Handy when sending data from a local server to a local client and viceversa.
 
-Tcp Message
+Message
 ======
 With `Message` you can easily create messages that can be converted into a byte-array and viceversa. 
 The attribute `[MessageField(int order)]`  allows for soring in the resulting byte array, its recommended to speficy the order as not doing so may lead to unpredictable behaviour.

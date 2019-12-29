@@ -1,5 +1,5 @@
 # Tcp Communication
-Extremly simple local interprocess communcation framework. Handy when sending data from a local server to a local client and viceversa.
+Extremly simple local interprocess communcation framework. Handy for sending data from one local process to a another one.
 
 
 Message
@@ -29,7 +29,7 @@ and converted back:
 ```csharp
 var message = MessageBuilder.GetMessage<TestMessage>(byteArray);
 ```
-Simple Unity Example
+Server-Client Unity Example
 =====
 Server (Unity Project A):
 ```csharp

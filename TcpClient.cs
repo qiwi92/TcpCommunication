@@ -11,7 +11,9 @@ namespace TCPCommunication
         bool _isActive;
 
         public event Action<byte[]> OnBytesReceived;
+        public event Action<Exception> OnException;
 
+        
         public void Initialize()
         {
             _isActive = true;
@@ -30,7 +32,7 @@ namespace TCPCommunication
             }
             catch (Exception e)
             {
-//            Debug.LogError("On client connect exception " + e);
+                OnException?.Invoke(e);
             }
         }
 
@@ -56,7 +58,7 @@ namespace TCPCommunication
             }
             catch (SocketException socketException)
             {
-//            Debug.Log("Socket exception: " + socketException);
+                OnException?.Invoke(socketException);
             }
         }
 
@@ -67,17 +69,13 @@ namespace TCPCommunication
 
             try
             {
-                // Get a stream object for writing. 			
                 var stream = _socketConnection.GetStream();
-                if (stream.CanWrite)
-                {
+                if (stream.CanWrite) 
                     stream.Write(message, 0, message.Length);
-//                Debug.Log("Client sent his message - should be received by server");
-                }
             }
             catch (SocketException socketException)
             {
-//            Debug.LogError("Socket exception: " + socketException);
+                OnException?.Invoke(socketException);
             }
         }
     }

@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 
@@ -10,8 +9,10 @@ namespace TCPCommunication
         TcpListener _tcpListener;
         Thread _tcpListenerThread;
         System.Net.Sockets.TcpClient _connectedTcpClient;
-    
+
         public event Action<byte[]> OnBytesReceived;
+        public event Action<Exception> OnException;
+        
         bool _isActive;
 
         public void Initialize()
@@ -24,36 +25,28 @@ namespace TCPCommunication
 
         public void Stop() => _isActive = false;
 
-
         void ListenForIncomingRequests()
         {
             try
             {
                 _tcpListener = new TcpListener(TcpInfo.IpAddress, TcpInfo.PortNo);
-
                 _tcpListener.Start();
-//            Debug.Log("Server is listening");
-                var bytes = new byte[1024];
                 while (_isActive)
                 {
                     using (_connectedTcpClient = _tcpListener.AcceptTcpClient())
                     {
+                        var bytes = new byte[_connectedTcpClient.ReceiveBufferSize];
                         using (var stream = _connectedTcpClient.GetStream())
                         {
-                            int length;
-                            while ((length = stream.Read(bytes, 0, bytes.Length)) != 0)
-                            {
-                                var incomingData = new byte[length];
-                                Array.Copy(bytes, 0, incomingData, 0, length);
+                            while (stream.Read(bytes, 0, bytes.Length) != 0) 
                                 OnBytesReceived?.Invoke(bytes);
-                            }
                         }
                     }
                 }
             }
             catch (SocketException socketException)
             {
-//            Debug.Log("SocketException " + socketException.ToString());
+                OnException?.Invoke(socketException);
             }
         }
 
@@ -65,15 +58,12 @@ namespace TCPCommunication
             try
             {
                 var stream = _connectedTcpClient.GetStream();
-                if (stream.CanWrite)
-                {
+                if (stream.CanWrite) 
                     stream.Write(message, 0, message.Length);
-//                Debug.Log("Server sent his message - should be received by client");
-                }
             }
             catch (SocketException socketException)
             {
-//            Debug.LogError("Socket exception: " + socketException);
+                OnException?.Invoke(socketException);
             }
         }
     }

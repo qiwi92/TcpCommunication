@@ -18,24 +18,20 @@ namespace TCPCommunication.Message
 
                 if (fieldType == typeof(byte))
                     layoutBlocks.Add(Write<ByteLayoutBlock, byte>(message, fieldInfo));
-
-                if (fieldType == typeof(int))
+                else if (fieldType == typeof(int))
                     layoutBlocks.Add(Write<Int32LayoutBlock, int>(message, fieldInfo));
-
-                if (fieldType == typeof(ushort))
+                else if (fieldType == typeof(ushort))
                     layoutBlocks.Add(Write<UshortLayoutBlock, ushort>(message, fieldInfo));
-
-                if (fieldType == typeof(float))
+                else if (fieldType == typeof(float))
                     layoutBlocks.Add(Write<FloatLayoutBlock, float>(message, fieldInfo));
-
-                if (fieldType == typeof(string))
+                else if (fieldType == typeof(string))
                     layoutBlocks.Add(Write<StringLayoutBlock, string>(message, fieldInfo));
-
-                if (fieldType == typeof(float[]))
+                else if (fieldType == typeof(float[]))
                     layoutBlocks.Add(Write<FloatArrayLayoutBlock, float[]>(message, fieldInfo));
-
-                if (fieldType == typeof(DateTime))
+                else if (fieldType == typeof(DateTime))
                     layoutBlocks.Add(Write<DateTimeLayoutBlock, DateTime>(message, fieldInfo));
+                else
+                    throw new Exception($"{nameof(MessageBuilder)} does not support {fieldType}");
             }
 
             var byteList = new List<byte>();
@@ -58,24 +54,20 @@ namespace TCPCommunication.Message
 
                 if (fieldType == typeof(byte))
                     Read<ByteLayoutBlock, byte>(ref idx, bytes, message, fieldInfo);
-
-                if (fieldType == typeof(int))
+                else if (fieldType == typeof(int))
                     Read<Int32LayoutBlock, int>(ref idx, bytes, message, fieldInfo);
-
-                if (fieldType == typeof(ushort))
+                else if (fieldType == typeof(ushort))
                     Read<UshortLayoutBlock, ushort>(ref idx, bytes, message, fieldInfo);
-
-                if (fieldType == typeof(float))
+                else if (fieldType == typeof(float))
                     Read<FloatLayoutBlock, float>(ref idx, bytes, message, fieldInfo);
-
-                if (fieldType == typeof(string))
+                else if (fieldType == typeof(string))
                     Read<StringLayoutBlock, string>(ref idx, bytes, message, fieldInfo);
-
-                if (fieldType == typeof(float[]))
+                else if (fieldType == typeof(float[]))
                     Read<FloatArrayLayoutBlock, float[]>(ref idx, bytes, message, fieldInfo);
-
-                if (fieldType == typeof(DateTime))
+                else if (fieldType == typeof(DateTime))
                     Read<DateTimeLayoutBlock, DateTime>(ref idx, bytes, message, fieldInfo);
+                else
+                    throw new Exception($"{nameof(MessageBuilder)} does not support {fieldType}");
             }
 
             return message;
@@ -95,7 +87,6 @@ namespace TCPCommunication.Message
                     ((MessageField) field.GetCustomAttributes(typeof(MessageField), false).First()).Order);
             return fieldValuesWithAttribute;
         }
-
 
         static void Read<T, TV>(ref int startIdx, byte[] bytes, Message message, FieldInfo fieldInfo)
             where T : LayoutBlock<TV>, new()

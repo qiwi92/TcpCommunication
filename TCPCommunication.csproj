@@ -42,7 +42,6 @@
     <Compile Include="Message\MessageBuilder.cs" />
     <Compile Include="Message\MessageField.cs" />
     <Compile Include="Message\MessageUtils.cs" />
-    <Compile Include="Message\ITcpMessage.cs" />
     <Compile Include="Message\LayoutBlocks\ByteLayoutBlock.cs" />
     <Compile Include="Message\LayoutBlocks\DateTimeLayoutBlock.cs" />
     <Compile Include="Message\LayoutBlocks\FloatArrayLayoutBlock.cs" />
@@ -51,7 +50,6 @@
     <Compile Include="Message\LayoutBlocks\LayoutBlock.cs" />
     <Compile Include="Message\LayoutBlocks\StringLayoutBlock.cs" />
     <Compile Include="Message\LayoutBlocks\UshortLayoutBlock.cs" />
-    <Compile Include="Message\LayoutBlocks\VariableLayoutBlock.cs" />
     <Compile Include="TcpInfo.cs" />
     <Compile Include="TcpServer.cs" />
     <Compile Include="TcpClient.cs" />

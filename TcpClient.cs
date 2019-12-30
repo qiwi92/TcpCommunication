@@ -13,20 +13,20 @@ namespace TCPCommunication
         public event Action<byte[]> OnBytesReceived;
         public event Action<Exception> OnException;
 
-        
+
         public void Initialize()
         {
             _isActive = true;
             ConnectToTcpServer();
         }
-    
+
         public void Stop() => _isActive = false;
 
         void ConnectToTcpServer()
         {
             try
             {
-                _clientReceiveThread = new Thread(new ThreadStart(ListenForData));
+                _clientReceiveThread = new Thread(ListenForData);
                 _clientReceiveThread.IsBackground = true;
                 _clientReceiveThread.Start();
             }
@@ -41,18 +41,13 @@ namespace TCPCommunication
             try
             {
                 _socketConnection = new System.Net.Sockets.TcpClient(TcpInfo.IpString, TcpInfo.PortNo);
-                var bytes = new byte[1024];
                 while (_isActive)
                 {
                     using (var stream = _socketConnection.GetStream())
                     {
-                        int length;
-                        while ((length = stream.Read(bytes, 0, bytes.Length)) != 0)
-                        {
-                            var incomingData = new byte[length];
-                            Array.Copy(bytes, 0, incomingData, 0, length);
+                        var bytes = new byte[_socketConnection.ReceiveBufferSize];
+                        while (stream.Read(bytes, 0, bytes.Length) != 0) 
                             OnBytesReceived?.Invoke(bytes);
-                        }
                     }
                 }
             }
@@ -70,7 +65,7 @@ namespace TCPCommunication
             try
             {
                 var stream = _socketConnection.GetStream();
-                if (stream.CanWrite) 
+                if (stream.CanWrite)
                     stream.Write(message, 0, message.Length);
             }
             catch (SocketException socketException)
